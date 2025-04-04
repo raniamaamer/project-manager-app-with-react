@@ -1,45 +1,30 @@
-/* === Variables === */
-:root {
-  --primary-color: #1f8ef1;
-  --secondary-color: #3d3d3d;
-  --accent-color: #3d2b1f;
-  --accent-hover: #2b1d14;
-  --light-bg: #f4f6f8;
-  --content-bg: #f9fafc;
-  --text-color: #333;
-  --border-color: #ccc;
-  --sidebar-bg: #1f1f1f;
-  --card-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-  --hover-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
-}
-
 /* === Global === */
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: var(--light-bg);
+  background-color: #f4f6f8;
   margin: 0;
   padding: 0;
-  color: var(--text-color);
+  color: #333;
 }
 
 /* === Layout === */
 .dashboard {
   display: flex;
   min-height: 100vh;
-  background-color: var(--content-bg);
 }
 
 /* === Sidebar === */
 .sidebar {
   width: 260px;
-  background-color: var(--sidebar-bg);
+  background-color: #1f1f1f;
   color: white;
   padding: 30px 20px;
   box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
 }
 
+/* === Bouton "Ajouter un projet" === */
 .add-project-btn {
-  background-color: var(--secondary-color);
+  background-color: #5D4037; /* Marron */
   color: #fff;
   border: none;
   padding: 12px 20px;
@@ -51,14 +36,14 @@ body {
 }
 
 .add-project-btn:hover {
-  background-color: #575757;
+  background-color: #3E2723; /* Marron plus foncé */
 }
 
 /* === Main Content === */
 .main-content {
   flex-grow: 1;
   padding: 40px 60px;
-  background-color: var(--content-bg);
+  background-color: #f9fafc;
 }
 
 /* === Project Form === */
@@ -66,9 +51,8 @@ body {
   background-color: #fff;
   padding: 25px;
   border-radius: 12px;
-  box-shadow: var(--card-shadow);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
   margin-bottom: 30px;
-  animation: fadeIn 0.5s ease-in-out;
 }
 
 .project-form input,
@@ -76,19 +60,12 @@ body {
   width: 100%;
   padding: 12px;
   margin-bottom: 15px;
-  border: 1px solid var(--border-color);
+  border: 1px solid #ccc;
   border-radius: 6px;
   font-size: 15px;
-  transition: border-color 0.2s;
-  cursor: text;
 }
 
-.project-form input:focus,
-.project-form textarea:focus {
-  border-color: var(--primary-color);
-  outline: none;
-}
-
+/* === Boutons du formulaire === */
 .project-form .form-buttons {
   display: flex;
   justify-content: flex-end;
@@ -101,17 +78,26 @@ body {
   border: none;
   border-radius: 6px;
   cursor: pointer;
-  transition: background-color 0.3s;
 }
 
+/* Bouton "Enregistrer" */
 .project-form button.save {
-  background-color: var(--primary-color);
+  background-color: #5D4037;
   color: white;
 }
 
+.project-form button.save:hover {
+  background-color: #3E2723;
+}
+
+/* Bouton "Annuler" */
 .project-form button.cancel {
-  background-color: #ddd;
-  color: var(--text-color);
+  background-color: #8D6E63;
+  color: white;
+}
+
+.project-form button.cancel:hover {
+  background-color: #6D4C41;
 }
 
 /* === Project List === */
@@ -120,14 +106,47 @@ body {
   margin-bottom: 15px;
   padding: 15px 20px;
   border-radius: 8px;
-  box-shadow: var(--card-shadow);
-  transition: box-shadow 0.2s ease-in-out, transform 0.2s;
-  animation: fadeIn 0.4s ease-in-out;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+  transition: box-shadow 0.2s ease-in-out;
 }
 
 .project-list .project-item:hover {
-  box-shadow: var(--hover-shadow);
-  transform: translateY(-2px);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* === Boutons Modifier et Supprimer === */
+.project-list .buttons {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.project-list .buttons button {
+  padding: 8px 15px;
+  font-size: 14px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+/* Bouton "Modifier" */
+.project-list .buttons button:first-child {
+  background-color: #5D4037;
+  color: white;
+}
+
+.project-list .buttons button:first-child:hover {
+  background-color: #3E2723;
+}
+
+/* Bouton "Supprimer" */
+.project-list .buttons button:last-child {
+  background-color: #8D6E63;
+  color: white;
+}
+
+.project-list .buttons button:last-child:hover {
+  background-color: #6D4C41;
 }
 
 /* === Empty State === */
@@ -149,8 +168,9 @@ body {
   opacity: 0.7;
 }
 
+/* === Bouton "Create New Project" === */
 .create-button {
-  background-color: var(--accent-color);
+  background-color: #5D4037; /* Marron */
   color: white;
   padding: 12px 25px;
   border: none;
@@ -161,7 +181,7 @@ body {
 }
 
 .create-button:hover {
-  background-color: var(--accent-hover);
+  background-color: #3E2723; /* Marron plus foncé */
 }
 
 /* === App Logo Animations === */
@@ -201,48 +221,5 @@ body {
   }
   to {
     transform: rotate(360deg);
-  }
-}
-
-/* === Fade-in Animation === */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* === Responsive Design === */
-@media (max-width: 768px) {
-  .dashboard {
-    flex-direction: column;
-  }
-
-  .sidebar {
-    width: 100%;
-    padding: 20px;
-    box-shadow: none;
-  }
-
-  .main-content {
-    padding: 20px;
-  }
-
-  .project-form,
-  .project-list .project-item {
-    padding: 20px;
-  }
-
-  .form-buttons {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .form-buttons button {
-    width: 100%;
   }
 }
