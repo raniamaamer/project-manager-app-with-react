@@ -51,7 +51,7 @@ body {
 
 .project-form input,
 .project-form textarea {
-  width: 120%;
+  width: 100%;
   padding: 12px;
   margin-bottom: 15px;
   border: 1px solid #ccc;
@@ -66,10 +66,10 @@ body {
 }
 
 .project-form button {
-  padding: 15px 18px;
-  font-size: 20px;
+  padding: 10px 18px;
+  font-size: 14px;
   border: none;
-  border-radius: 10px;
+  border-radius: 6px;
   cursor: pointer;
 }
 
@@ -107,7 +107,7 @@ body {
 .project-buttons {
   display: flex;
   gap: 10px;
-  margin-top: 12px;
+  margin-top: 10px;
   justify-content: center; 
   align-items: center; 
 }
