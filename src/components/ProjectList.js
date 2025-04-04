@@ -1,4 +1,4 @@
-const ProjectList = ({ projects, onEdit }) => (
+const ProjectList = ({ projects, onEdit, onDelete }) => (
   <div className="project-list">
     {projects.length > 0 ? (
       projects.map((project) => (
@@ -6,7 +6,10 @@ const ProjectList = ({ projects, onEdit }) => (
           <h3>{project.title}</h3>
           <p>{project.description}</p>
           <small>Due: {project.dueDate || 'No deadline'}</small>
-          <button className="create-button" onClick={() => onEdit(project)}>Modifier</button>
+          <div className="project-buttons">
+            <button className="edit-button" onClick={() => onEdit(project)}>Modifier</button>
+            <button className="delete-button" onClick={() => onDelete(project.id)}>Supprimer</button>
+          </div>
         </div>
       ))
     ) : (
