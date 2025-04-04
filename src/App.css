@@ -25,7 +25,7 @@ body {
 /* === Bouton "Ajouter un projet" === */
 .add-project-btn {
   background-color: #5D4037; /* Marron */
-  color: #fff;
+  color: white;
   border: none;
   padding: 12px 20px;
   margin-top: 30px;
@@ -115,38 +115,29 @@ body {
 }
 
 /* === Boutons Modifier et Supprimer === */
-.project-list .buttons {
+.project-buttons {
   display: flex;
   gap: 10px;
   margin-top: 10px;
 }
 
-.project-list .buttons button {
-  padding: 8px 15px;
-  font-size: 14px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-/* Bouton "Modifier" */
-.project-list .buttons button:first-child {
-  background-color: #5D4037;
+.project-buttons .edit-button {
+  background-color: #5D4037; /* Marron */
   color: white;
 }
 
-.project-list .buttons button:first-child:hover {
+.project-buttons .edit-button:hover {
   background-color: #3E2723;
 }
 
 /* Bouton "Supprimer" */
-.project-list .buttons button:last-child {
-  background-color: #8D6E63;
+.project-buttons .delete-button {
+  background-color: #8B0000; /* Rouge foncé */
   color: white;
 }
 
-.project-list .buttons button:last-child:hover {
-  background-color: #6D4C41;
+.project-buttons .delete-button:hover {
+  background-color: #600000; /* Rouge plus foncé */
 }
 
 /* === Empty State === */
