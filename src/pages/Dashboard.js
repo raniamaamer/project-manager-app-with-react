@@ -4,7 +4,7 @@ import ProjectForm from '../components/ProjectForm';
 import ProjectList from '../components/ProjectList';
 import clipboard from '../pages/clipboard.png';
 import { db } from '../firebaseConfig';
-import { collection, addDoc, getDocs, updateDoc, doc } from 'firebase/firestore';
+import { collection, addDoc, getDocs, updateDoc, deleteDoc, doc } from 'firebase/firestore';
 
 const Dashboard = () => {
   const [projects, setProjects] = useState([]);
@@ -34,6 +34,11 @@ const Dashboard = () => {
     setShowForm(false);
   };
 
+  const deleteProject = async (id) => {
+    await deleteDoc(doc(db, 'projects', id));
+    setProjects(projects.filter(project => project.id !== id));
+  };
+
   useEffect(() => {
     fetchProjects();
   }, []);
@@ -61,6 +66,7 @@ const Dashboard = () => {
                 setEditingProject(project);
                 setShowForm(true);
               }}
+              onDelete={deleteProject}
             />
           </div>
         )}
