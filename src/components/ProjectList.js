@@ -7,8 +7,8 @@ const ProjectList = ({ projects, onEdit, onDelete }) => (
           <p>{project.description}</p>
           <small>Due: {project.dueDate || 'No deadline'}</small>
           <div className="project-buttons">
-            <button className="edit-button" onClick={() => onEdit(project)}>Modifier</button>
-            <button className="delete-button" onClick={() => onDelete(project.id)}>Supprimer</button>
+            <button className="edit-button" onClick={() => onEdit(project)}>Modify</button>
+            <button className="delete-button" onClick={() => onDelete(project.id)}>Delete</button>
           </div>
         </div>
       ))
