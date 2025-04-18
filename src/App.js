@@ -1,26 +1,33 @@
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import AuthPage from './pages/AuthPage';
+import LoginPage from './pages/LoginPage';  
 import Dashboard from './pages/Dashboard';
-import logo from './logo.svg';
-import './App.css';
+import ProtectedRoute from './components/ProtectedRoute'; 
 
 function App() {
   return (
-    <div className="App">
-      <Dashboard />
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <Routes>
+        {/* Route publique - Page d'inscription */}
+        <Route path="/signup" element={<AuthPage />} />
+        
+        {/* Route publique - Page de connexion */}
+        <Route path="/login" element={<LoginPage />} />
+        
+        {/* Route protégée - Tableau de bord */}
+        <Route 
+          path="/dashboard" 
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          } 
+        />
+        
+        {/* Redirection par défaut */}
+        <Route path="/" element={<LoginPage />} />
+      </Routes>
+    </Router>
   );
 }
 

@@ -8,11 +8,11 @@ body {
 
 .dashboard {
   display: flex;
-  min-height: 100vh;
+  min-block-size: 100vh;
 }
 
 .sidebar {
-  width: 260px;
+  inline-size: 260px;
   background-color: #1f1f1f;
   color: white;
   padding: 30px 20px;
@@ -24,11 +24,11 @@ body {
   color: white;
   border: none;
   padding: 12px 20px;
-  margin-top: 30px;
+  margin-block-start: 30px;
   border-radius: 8px;
   cursor: pointer;
   transition: background-color 0.3s;
-  width: 100%;
+  inline-size: 100%;
 }
 
 .add-project-btn:hover {
@@ -46,14 +46,14 @@ body {
   padding: 25px;
   border-radius: 12px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-  margin-bottom: 30px;
+  margin-block-end: 30px;
 }
 
 .project-form input,
 .project-form textarea {
-  width: 100%;
+  inline-size: 100%;
   padding: 12px;
-  margin-bottom: 15px;
+  margin-block-end: 15px;
   border: 1px solid #ccc;
   border-radius: 6px;
   font-size: 15px;
@@ -93,7 +93,7 @@ body {
 
 .project-list .project-item {
   background-color: white;
-  margin-bottom: 15px;
+  margin-block-end: 15px;
   padding: 15px 20px;
   border-radius: 8px;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
@@ -107,7 +107,7 @@ body {
 .project-buttons {
   display: flex;
   gap: 10px;
-  margin-top: 10px;
+  margin-block-start: 10px;
   justify-content: center; 
   align-items: center; 
 }
@@ -136,16 +136,16 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100%;
+  block-size: 100%;
   text-align: center;
   padding: 40px;
   color: #666;
 }
 
 .empty-image {
-  width: 100px;
-  height: 100px;
-  margin-bottom: 20px;
+  inline-size: 100px;
+  block-size: 100px;
+  margin-block-end: 20px;
   opacity: 0.7;
 }
 
@@ -171,7 +171,7 @@ body {
 }
 
 .App-logo {
-  height: 40vmin;
+  block-size: 40vmin;
   pointer-events: none;
 }
 
@@ -183,7 +183,7 @@ body {
 
 .App-header {
   background-color: #282c34;
-  min-height: 100vh;
+  min-block-size: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -204,4 +204,3 @@ body {
     transform: rotate(360deg);
   }
 }
-
