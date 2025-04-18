@@ -13,7 +13,7 @@ export default function LoginPage() {
     e.preventDefault();
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      navigate('/dashboard');
+      navigate('/dashboard'); // Redirige vers le dashboard après connexion
     } catch (error) {
       setError('Email ou mot de passe incorrect');
     }

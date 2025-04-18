@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { auth, db } from '../services/firebaseConfig';
 import { signOut } from 'firebase/auth';
-import { collection, addDoc, getDocs, updateDoc, deleteDoc, doc } from 'firebase/firestore';
+import { collection, addDoc, getDocs, updateDoc, deleteDoc, doc, query, where, arrayUnion, arrayRemove } from 'firebase/firestore';
 import Sidebar from '../components/Sidebar';
 import ProjectForm from '../components/ProjectForm';
 import clipboard from '../pages/clipboard.png';
@@ -13,8 +13,10 @@ const Dashboard = () => {
   const [showForm, setShowForm] = useState(false);
   const [editingProject, setEditingProject] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isProcessing, setIsProcessing] = useState(false);
   const navigate = useNavigate();
 
+  // Gestion de l'authentification
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
       if (!user) {
@@ -26,14 +28,30 @@ const Dashboard = () => {
     return unsubscribe;
   }, [navigate]);
 
+  // Récupération des projets
   const fetchProjects = useCallback(async () => {
     try {
-      const querySnapshot = await getDocs(collection(db, 'projects'));
+      if (!auth.currentUser) return;
+  
+      const q = query(
+        collection(db, 'projects'),
+        where('userId', '==', auth.currentUser.uid)
+      );
+  
+      const querySnapshot = await getDocs(q);
       const projectList = querySnapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data(),
-        tasks: doc.data().tasks || []
+        tasks: doc.data().tasks || [],
+        dueDate: doc.data().dueDate || null,
+        lastUpdated: doc.data().lastUpdated || null
       }));
+  
+      // Tri par date de modification
+      projectList.sort((a, b) => 
+        new Date(b.lastUpdated) - new Date(a.lastUpdated)
+      );
+      
       setProjects(projectList);
     } catch (error) {
       console.error("Erreur de chargement:", error);
@@ -44,73 +62,119 @@ const Dashboard = () => {
     fetchProjects();
   }, [fetchProjects]);
 
+  // Sauvegarde d'un projet
   const handleProject = async (projectData, isUpdate) => {
+    if (isProcessing) return;
+    setIsProcessing(true);
+
     try {
       const projectToSave = {
-        title: projectData.title,
-        description: projectData.description,
+        title: projectData.title.trim(),
+        description: projectData.description.trim(),
         dueDate: projectData.dueDate,
         tasks: projectData.tasks || [],
-        userId: auth.currentUser.uid
+        userId: auth.currentUser.uid,
+        lastUpdated: new Date().toISOString()
       };
 
       if (isUpdate) {
         const projectRef = doc(db, 'projects', projectData.id);
         await updateDoc(projectRef, projectToSave);
-        setProjects(projects.map(p => p.id === projectData.id ? { ...projectToSave, id: projectData.id } : p));
+        
+        // Mise à jour optimiste de l'état local
+        setProjects(prev => prev.map(p => 
+          p.id === projectData.id ? { ...projectToSave, id: projectData.id } : p
+        ));
       } else {
         const docRef = await addDoc(collection(db, 'projects'), projectToSave);
-        setProjects([...projects, { ...projectToSave, id: docRef.id }]);
+        
+        // Mise à jour optimiste de l'état local
+        setProjects(prev => [{ ...projectToSave, id: docRef.id }, ...prev]);
       }
+      
       setShowForm(false);
       setEditingProject(null);
     } catch (error) {
-      console.error("Erreur:", error);
+      console.error("Error saving project:", error);
+      // Rollback en cas d'erreur
+      fetchProjects();
+    } finally {
+      setIsProcessing(false);
     }
   };
 
-  const handleToggleTask = async (projectId, taskId) => {
+  // Gestion des tâches
+  const handleTaskOperation = async (operation, projectId, taskData) => {
+    if (isProcessing) return;
+    setIsProcessing(true);
+
     try {
-      const project = projects.find(p => p.id === projectId);
-      if (!project) return;
-
-      const updatedTasks = project.tasks.map(task =>
-        task.id === taskId
-          ? { ...task, completed: !task.completed }
-          : task
-      );
-
       const projectRef = doc(db, 'projects', projectId);
-      await updateDoc(projectRef, { tasks: updatedTasks });
+      
+      // eslint-disable-next-line default-case
+      switch (operation) {
+        case 'TOGGLE':
+          await updateDoc(projectRef, {
+            tasks: arrayRemove(taskData),
+            lastUpdated: new Date().toISOString()
+          });
+          await updateDoc(projectRef, {
+            tasks: arrayUnion({ ...taskData, completed: !taskData.completed }),
+            lastUpdated: new Date().toISOString()
+          });
+          break;
+          
+        case 'ADD':
+          await updateDoc(projectRef, {
+            tasks: arrayUnion(taskData),
+            lastUpdated: new Date().toISOString()
+          });
+          break;
+          
+        case 'DELETE':
+          await updateDoc(projectRef, {
+            tasks: arrayRemove(taskData),
+            lastUpdated: new Date().toISOString()
+          });
+          break;
+      }
 
-      setProjects(projects.map(p =>
-        p.id === projectId ? { ...p, tasks: updatedTasks } : p
-      ));
+      // Mise à jour optimiste
+      // eslint-disable-next-line array-callback-return
+      setProjects(prev => prev.map(project => {
+        if (project.id !== projectId) return project;
+        
+        // eslint-disable-next-line default-case
+        switch (operation) {
+          case 'TOGGLE':
+            return {
+              ...project,
+              tasks: project.tasks.map(task => 
+                task.id === taskData.id ? { ...task, completed: !task.completed } : task
+              ),
+              lastUpdated: new Date().toISOString()
+            };
+            
+          case 'ADD':
+            return {
+              ...project,
+              tasks: [...project.tasks, taskData],
+              lastUpdated: new Date().toISOString()
+            };
+            
+          case 'DELETE':
+            return {
+              ...project,
+              tasks: project.tasks.filter(t => t.id !== taskData.id),
+              lastUpdated: new Date().toISOString()
+            };
+        }
+      }));
     } catch (error) {
-      console.error("Erreur de modification de tâche:", error);
-    }
-  };
-
-  const handleAddTask = async (projectId, taskText) => {
-    try {
-      const project = projects.find(p => p.id === projectId);
-      if (!project) return;
-
-      const newTask = {
-        id: Date.now().toString(),
-        text: taskText,
-        completed: false
-      };
-
-      const updatedTasks = [...(project.tasks || []), newTask];
-      const projectRef = doc(db, 'projects', projectId);
-      await updateDoc(projectRef, { tasks: updatedTasks });
-
-      setProjects(projects.map(p =>
-        p.id === projectId ? { ...p, tasks: updatedTasks } : p
-      ));
-    } catch (error) {
-      console.error("Erreur d'ajout de tâche:", error);
+      console.error(`Erreur ${operation} tâche:`, error);
+      fetchProjects(); // Rollback
+    } finally {
+      setIsProcessing(false);
     }
   };
 
@@ -145,6 +209,7 @@ const Dashboard = () => {
                 setEditingProject(null);
               }}
               initialData={editingProject}
+              isProcessing={isProcessing}
             />
           </div>
         ) : projects.length === 0 ? (
@@ -154,36 +219,49 @@ const Dashboard = () => {
             <button
               className="create-button"
               onClick={() => setShowForm(true)}
+              disabled={isProcessing}
             >
               Nouveau Projet
             </button>
           </div>
         ) : (
           <div className="projects-container">
-            <h1 className="projects-title">YOUR PROJECTS</h1>
-
-            <div className="projects-buttons">
-              <button
-                className="btn-brown"
-                onClick={() => {
-                  setEditingProject(null);
-                  setShowForm(true);
-                }}
-              >
-                + Add Project
-              </button>
-              <button
-                className="btn-secondary"
-                onClick={handleLogout}
-              >
-                Logout
-              </button>
+            <div className="projects-header">
+              <h1 className="projects-title">YOUR PROJECTS</h1>
+              <div className="projects-buttons">
+                <button
+                  className="btn-brown"
+                  onClick={() => {
+                    setEditingProject(null);
+                    setShowForm(true);
+                  }}
+                  disabled={isProcessing}
+                >
+                  + Add Project
+                </button>
+                <button
+                  className="btn-secondary"
+                  onClick={handleLogout}
+                  disabled={isProcessing}
+                >
+                  Logout
+                </button>
+              </div>
             </div>
 
             {projects.map(project => (
               <div key={project.id} className="project-card">
                 <div className="project-header">
                   <h2>{project.title}</h2>
+                  {project.dueDate && (
+                    <p className="project-date">
+                      Pour le {new Date(project.dueDate).toLocaleDateString('fr-FR', {
+                        day: 'numeric',
+                        month: 'long',
+                        year: 'numeric'
+                      })}
+                    </p>
+                  )}
                 </div>
 
                 <p className="project-description">
@@ -191,27 +269,47 @@ const Dashboard = () => {
                 </p>
 
                 <div className="task-section">
-                  <h3>Tasks</h3>
-                  <ul className="task-list">
-                    {project.tasks.map(task => (
-                      <li key={task.id} className="task-item">
-                        <input
-                          type="checkbox"
-                          checked={task.completed}
-                          onChange={() => handleToggleTask(project.id, task.id)}
-                        />
-                        <span className={task.completed ? "completed-task" : ""}>
-                          {task.text}
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
+                  <div className="task-section-header">
+                    <h3>Tasks</h3>
+                    <span className="task-count">
+                      {project.tasks.filter(t => t.completed).length} / {project.tasks.length} terminées
+                    </span>
+                  </div>
+                  
+                  {project.tasks.length > 0 ? (
+                    <ul className="task-list">
+                      {project.tasks.map(task => (
+                        <li key={task.id} className="task-item">
+                          <input
+                            type="checkbox"
+                            checked={task.completed}
+                            onChange={() => handleTaskOperation('TOGGLE', project.id, task)}
+                            disabled={isProcessing}
+                          />
+                          <span className={task.completed ? "completed-task" : ""}>
+                            {task.text}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className="no-tasks">Aucune tâche pour ce projet</p>
+                  )}
+                  
                   <button
                     className="add-task-btn"
-                    onClick={() => {
+                    onClick={async () => {
                       const taskText = prompt("Entrez une nouvelle tâche");
-                      if (taskText) handleAddTask(project.id, taskText);
+                      if (taskText) {
+                        const newTask = {
+                          id: Date.now().toString(),
+                          text: taskText,
+                          completed: false
+                        };
+                        await handleTaskOperation('ADD', project.id, newTask);
+                      }
                     }}
+                    disabled={isProcessing}
                   >
                     + Add Task
                   </button>
@@ -224,19 +322,23 @@ const Dashboard = () => {
                       setEditingProject(project);
                       setShowForm(true);
                     }}
+                    disabled={isProcessing}
                   >
                     Modify
                   </button>
                   <button
                     className="delete-btn"
                     onClick={async () => {
-                      try {
-                        await deleteDoc(doc(db, 'projects', project.id));
-                        setProjects(projects.filter(p => p.id !== project.id));
-                      } catch (error) {
-                        console.error("Erreur de suppression:", error);
+                      if (window.confirm("Supprimer ce projet définitivement ?")) {
+                        try {
+                          await deleteDoc(doc(db, 'projects', project.id));
+                          setProjects(projects.filter(p => p.id !== project.id));
+                        } catch (error) {
+                          console.error("Erreur de suppression:", error);
+                        }
                       }
                     }}
+                    disabled={isProcessing}
                   >
                     Delete
                   </button>

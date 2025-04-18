@@ -1,0 +1,213 @@
+:root {
+    /* Couleurs */
+    --primary-color: #5D4037;
+    --primary-hover: #4E342E;
+    --secondary-color: #3E2723;
+    --border-color: #D7CCC8;
+    --background-light: #ffe6c063;
+    --task-bg: #f9f9f9;
+    --error-color: #d32f2f;
+    --text-muted: #777;
+    
+    /* Espacements */
+    --form-group-margin: 0.097rem;        /* Espace entre les groupes */
+    --label-margin: 0.01rem;          /* Espace sous les labels */
+    --input-padding: 0.75rem;        /* Padding interne des champs */
+    --section-spacing: 1.5rem;       /* Espace entre sections */
+    --input-max-width: 500px;        /* Largeur max des champs */
+    --date-input-width: 220px;       /* Largeur champ date */
+    --task-input-width: 400px;       /* Largeur champ tâches */
+  }
+  
+  .project-form {
+    max-inline-size: 650px;
+    margin: 1.5rem auto;
+    padding: 1.5rem;
+    background: var(--background-light);
+    border-radius: 12px;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
+  }
+  
+  .form-group {
+    margin-block-end: var(--form-group-margin);
+    position: relative;
+  }
+  
+  .form-group label {
+    display: block;
+    margin-block-end: var(--label-margin);
+    font-weight: 600;
+    color: var(--secondary-color);
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+  
+  .form-group input:not([type="date"]),
+  .form-group textarea {
+    inline-size: 100%;
+    max-inline-size: var(--input-max-width);
+    padding: var(--input-padding);
+    border: 1.5px solid var(--border-color);
+    border-radius: 6px;
+    font-size: 0.95rem;
+    background: white;
+    transition: all 0.2s ease;
+    display: block;
+    margin-inline: auto;
+  }
+  
+  .form-group input[type="date"] {
+    max-inline-size: var(--date-input-width);
+    padding: calc(var(--input-padding) - 0.15rem);
+  }
+  
+  .form-group input:focus,
+  .form-group textarea:focus {
+    border-color: var(--primary-color);
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(93, 64, 55, 0.1);
+  }
+  
+  .form-group textarea {
+    resize: vertical;
+    min-block-size: 100px;
+    line-height: 1.5;
+  }
+  
+  .tasks-section {
+    margin-block-start: var(--section-spacing);
+    padding-block-start: var(--section-spacing);
+    border-block-start: 1px dashed var(--border-color);
+  }
+  
+  .task-input-container {
+    display: flex;
+    gap: 0.6rem;
+    margin-block-end: 1rem;
+    max-inline-size: var(--task-input-width);
+    margin-inline: auto;
+  }
+  
+  .task-input-container input {
+    flex: 1;
+    padding: var(--input-padding);
+    border: 1.5px solid var(--border-color);
+    border-radius: 6px;
+    font-size: 0.95rem;
+  }
+  
+  .add-task-btn {
+    padding: 0 1.25rem;
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-weight: 500;
+    font-size: 0.9rem;
+  }
+  
+  .add-task-btn:hover {
+    background: var(--primary-hover);
+  }
+  
+  .task-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    max-inline-size: var(--task-input-width);
+    margin-inline: auto;
+  }
+  
+  .task-item {
+    display: flex;
+    align-items: center;
+    padding: 0.8rem;
+    background: var(--task-bg);
+    border-radius: 6px;
+  }
+  
+  .task-checkbox {
+    margin-inline-end: 0.8rem;
+  }
+  
+  .task-text {
+    flex: 1;
+    font-size: 0.95rem;
+  }
+  
+  .task-text.completed {
+    text-decoration: line-through;
+    color: var(--text-muted);
+  }
+  
+  .remove-task-btn {
+    background: none;
+    border: none;
+    color: var(--error-color);
+    font-size: 1.3rem;
+    cursor: pointer;
+    padding: 0.2rem;
+  }
+  
+  .form-actions {
+    display: flex;
+    justify-content: center;
+    gap: 0.8rem;
+    margin-block-start: 2rem;
+  }
+  
+  .cancel-btn, 
+  .save-btn {
+    padding: 0.8rem 1.5rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
+  }
+  
+  .cancel-btn {
+    background: white;
+    border: 1.5px solid var(--border-color);
+    color: var(--secondary-color);
+  }
+  
+  .save-btn {
+    background: var(--primary-color);
+    color: white;
+    border: 1.5px solid var(--primary-color);
+  }
+  
+  /* Responsive */
+  @media (max-width: 768px) {
+    :root {
+      --form-group-margin: 0.8rem;
+      --label-margin: 0.4rem;
+      --section-spacing: 1.25rem;
+    }
+    
+    .project-form {
+      padding: 1.25rem;
+      margin: 1rem;
+    }
+    
+    .form-group input[type="date"] {
+      max-inline-size: 180px;
+    }
+    
+    .form-actions {
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+    
+    .cancel-btn,
+    .save-btn {
+      inline-size: 100%;
+    }
+  }

@@ -5,26 +5,22 @@ import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 
 export default function AuthPage() {
-  const [email, setEmail] = useState('raniamaamer2001@gmail.com'); // Email corrigé
+  const [email, setEmail] = useState(); 
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Tentative inscription:', email); // Debug
-    
     try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      console.log('Réponse Firebase:', userCredential); // Debug
-      navigate('/dashboard');
+      await createUserWithEmailAndPassword(auth, email, password);
+      navigate('/dashboard'); 
     } catch (err) {
-      console.error('Erreur complète:', err); // Debug complet
       setError(getErrorMessage(err.code));
     }
   };
 
-  // Gestion améliorée des erreurs
+  
   const getErrorMessage = (code) => {
     const errors = {
       'auth/email-already-in-use': 'Cet email est déjà utilisé',

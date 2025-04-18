@@ -14,7 +14,7 @@ export default function ProtectedRoute({ children }) {
     return unsubscribe;
   }, []);
 
-  if (loading) return null; // ou un spinner de chargement
+  if (loading) return null; 
   if (!user) return <Navigate to="/login" replace />;
 
   return children;
