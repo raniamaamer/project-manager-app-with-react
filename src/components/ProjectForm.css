@@ -10,13 +10,13 @@
     --text-muted: #777;
     
     /* Espacements */
-    --form-group-margin: 0.097rem;        /* Espace entre les groupes */
-    --label-margin: 0.01rem;          /* Espace sous les labels */
-    --input-padding: 0.75rem;        /* Padding interne des champs */
-    --section-spacing: 1.5rem;       /* Espace entre sections */
-    --input-max-width: 500px;        /* Largeur max des champs */
-    --date-input-width: 220px;       /* Largeur champ date */
-    --task-input-width: 400px;       /* Largeur champ tâches */
+    --form-group-margin: 0.097rem;        
+    --label-margin: 0.01rem;          
+    --input-padding: 0.75rem;        
+    --section-spacing: 1.5rem;       
+    --input-max-width: 500px;       
+    --date-input-width: 220px;       
+    --task-input-width: 400px;       
   }
   
   .project-form {

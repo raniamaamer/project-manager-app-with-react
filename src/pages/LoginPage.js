@@ -21,7 +21,7 @@ export default function LoginPage() {
 
   return (
     <div style={{ maxWidth: '400px', margin: '2rem auto', padding: '1rem' }}>
-      <h1>Connexion</h1>
+      <h1>Connection</h1>
       
       {error && (
         <div style={{ 
@@ -48,7 +48,7 @@ export default function LoginPage() {
         </div>
 
         <div style={{ marginBottom: '1rem' }}>
-          <label style={{ display: 'block', marginBottom: '0.5rem' }}>Mot de passe</label>
+          <label style={{ display: 'block', marginBottom: '0.5rem' }}>Password</label>
           <input
             type="password"
             value={password}
@@ -71,13 +71,13 @@ export default function LoginPage() {
             cursor: 'pointer'
           }}
         >
-          Se connecter
+          Login
         </button>
       </form>
 
       <p style={{ marginTop: '1rem', textAlign: 'center' }}>
-        Pas de compte ?{' '}
-        <Link to="/signup" style={{ color: '#5D4037', textDecoration: 'underline' }}>S'inscrire</Link>
+        No Account ?{' '}
+        <Link to="/signup" style={{ color: '#5D4037', textDecoration: 'underline' }}>Register</Link>
       </p>
     </div>
   );

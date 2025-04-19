@@ -187,7 +187,7 @@ const Dashboard = () => {
     }
   };
 
-  if (loading) return <div className="loading">Chargement...</div>;
+  if (loading) return <div className="loading">Loading...</div>;
 
   return (
     <div className="dashboard">
@@ -215,13 +215,13 @@ const Dashboard = () => {
         ) : projects.length === 0 ? (
           <div className="empty-state">
             <img src={clipboard} alt="Aucun projet" className="empty-state-img" />
-            <p>Commencez par créer un nouveau projet</p>
+            <p>Start by creating a new project</p>
             <button
               className="create-button"
               onClick={() => setShowForm(true)}
               disabled={isProcessing}
             >
-              Nouveau Projet
+              New Project
             </button>
           </div>
         ) : (
@@ -255,7 +255,7 @@ const Dashboard = () => {
                   <h2>{project.title}</h2>
                   {project.dueDate && (
                     <p className="project-date">
-                      Pour le {new Date(project.dueDate).toLocaleDateString('fr-FR', {
+                      In {new Date(project.dueDate).toLocaleDateString('fr-FR', {
                         day: 'numeric',
                         month: 'long',
                         year: 'numeric'
@@ -272,7 +272,7 @@ const Dashboard = () => {
                   <div className="task-section-header">
                     <h3>Tasks</h3>
                     <span className="task-count">
-                      {project.tasks.filter(t => t.completed).length} / {project.tasks.length} terminées
+                      {project.tasks.filter(t => t.completed).length} / {project.tasks.length} Done
                     </span>
                   </div>
                   
@@ -293,7 +293,7 @@ const Dashboard = () => {
                       ))}
                     </ul>
                   ) : (
-                    <p className="no-tasks">Aucune tâche pour ce projet</p>
+                    <p className="no-tasks">No tasks for this project</p>
                   )}
                   
                   <button
